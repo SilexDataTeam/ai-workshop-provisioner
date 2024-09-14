@@ -322,7 +322,7 @@ module "cluster_autoscaler_irsa_role" {
   oidc_providers = {
     main = {
       provider_arn               = aws_iam_openid_connect_provider.ai_workshop_eks_cluster_oidc_provider.arn
-      namespace_service_accounts = ["kube-system:cluster-autoscaler"]
+      namespace_service_accounts = ["kube-system:cluster-autoscaler-aws-cluster-autoscaler"]
     }
   }
 }
