@@ -1,0 +1,33 @@
+hub:
+  config:
+    Authenticator:
+      admin_users:
+%{ for user in admin_users ~}
+        - ${user}
+%{ endfor ~}
+      allowed_users:
+%{ for user in allowed_users ~}
+        - ${user}
+%{ endfor ~}
+    DummyAuthenticator:
+      password: "${dummy_auth_password}"
+    JupyterHub:
+      authenticator_class: dummy
+singleuser:
+  profileList:
+    - display_name: "GPU Server"
+      description: "Spawns a notebook server with access to a GPU"
+      kubespawner_override:
+        extra_resource_limits:
+          nvidia.com/gpu: "1"
+  storage:
+    capacity: 100Gi
+  image:
+    name: jupyter/minimal-notebook
+    tag: latest
+ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: "alb"
+      alb.ingress.kubernetes.io/scheme: "internet-facing"
+      alb.ingress.kubernetes.io/certificate-arn: "${aws_acm_certificate_arn}"
