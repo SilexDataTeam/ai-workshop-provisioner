@@ -271,7 +271,7 @@ resource "helm_release" "ai_workshop_eks_cluster_aws_load_balancer_controller_he
     value = kubernetes_service_account.ai_workshop_eks_cluster_aws_load_balancer_controller_service_account.metadata.0.name
   }
 
-  depends_on = [aws_eks_node_group.ai_workshop_eks_cluster_cpu_node_group_1]
+  depends_on = [aws_eks_node_group.ai_workshop_eks_cluster_cpu_node_group_1, module.load_balancer_controller_irsa_role]
 }
 
 resource "aws_s3_bucket" "ai_workshop_logs_bucket" {
@@ -402,6 +402,8 @@ resource "aws_acm_certificate" "jupyterhub_cert" {
   tags = {
     Name = var.ai_workshop_domain_name
   }
+
+  depends_on = [aws_eks_cluster.ai_workshop_eks_cluster]
 }
 
 # Reference your existing Route53 zone
@@ -463,7 +465,11 @@ resource "helm_release" "ai_workshop_jupyterhub" {
     })
   ]
 
-  depends_on = [aws_eks_node_group.ai_workshop_eks_cluster_cpu_node_group_1]
+  depends_on = [aws_eks_node_group.ai_workshop_eks_cluster_cpu_node_group_1,
+    helm_release.ai_workshop_eks_cluster_autoscaler_helm_release,
+    helm_release.ai_workshop_eks_cluster_aws_load_balancer_controller_helm_release,
+    helm_release.ai_workshop_eks_cluster_nvidia_device_plugin_helm_release,
+  aws_eks_addon.ai_workshop_eks_cluster_aws_ebs_csi_driver]
 }
 
 # Retrieve the Ingress resource to get the ALB hostname
