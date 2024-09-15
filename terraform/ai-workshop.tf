@@ -1,3 +1,9 @@
+locals {
+  allowed_users = [
+    for i in range(1, var.number_of_users + 1) : "${var.user_prefix}${i}"
+  ]
+}
+
 resource "aws_iam_role" "ai_workshop_eks_cluster_role" {
   name               = "${var.ai_workshop_eks_cluster_name}-role"
   assume_role_policy = <<EOF
@@ -168,7 +174,7 @@ resource "aws_eks_node_group" "ai_workshop_eks_cluster_gpu_node_group_1" {
 
   scaling_config {
     desired_size = 0
-    max_size     = 2
+    max_size     = var.number_of_users
     min_size     = 0
   }
 
@@ -459,7 +465,7 @@ resource "helm_release" "ai_workshop_jupyterhub" {
   values = [
     templatefile("${path.module}/files/jupyterhub_values.tftpl", {
       admin_users             = var.admin_users
-      allowed_users           = var.allowed_users
+      allowed_users           = local.allowed_users
       dummy_auth_password     = var.ai_workshop_shared_password
       aws_acm_certificate_arn = aws_acm_certificate_validation.jupyterhub_cert_validation.certificate_arn
     })
