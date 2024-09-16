@@ -22,8 +22,30 @@ singleuser:
           nvidia.com/gpu: "1"
   storage:
     capacity: 100Gi
+    extraVolumes:
+      - name: git-deploy-key
+        secret:
+          secretName: ${git_deploy_key_secret_name}
+    extraVolumeMounts:
+      - name: git-deploy-key
+        mountPath: /etc/git-secret
+  lifecycleHooks:
+    postStart:
+      exec:
+        command:
+          - sh
+          - -c
+          - |
+            pip install -U nbgitpuller
+            eval "$(ssh-agent -s)"
+            ssh-add /etc/git-secret/id_rsa
+            mkdir -p /home/jovyan/.ssh
+            ssh-keyscan -H github.com >> /home/jovyan/.ssh/known_hosts
+            gitpuller ${git_repo_url} main /home/jovyan/ai-workshop-materials
+            ssh-agent -k
+            rm -rf /home/jovyan/.ssh
   image:
-    name: jupyter/minimal-notebook
+    name: quay.io/jupyter/minimal-notebook
     tag: latest
 ingress:
     enabled: true
@@ -31,3 +53,4 @@ ingress:
       kubernetes.io/ingress.class: "alb"
       alb.ingress.kubernetes.io/scheme: "internet-facing"
       alb.ingress.kubernetes.io/certificate-arn: "${aws_acm_certificate_arn}"
+      alb.ingress.kubernetes.io/target-group-attributes: "stickiness.enabled=true,stickiness.type=lb_cookie,stickiness.lb_cookie.duration_seconds=86400"

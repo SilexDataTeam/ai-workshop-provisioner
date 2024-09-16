@@ -364,7 +364,6 @@ resource "helm_release" "ai_workshop_eks_cluster_nvidia_device_plugin_helm_relea
   chart      = "nvidia-device-plugin"
   repository = "https://nvidia.github.io/k8s-device-plugin"
   namespace  = "kube-system"
-  version    = "0.16.1"
   set {
     name  = "gfd.enabled"
     value = "true"
@@ -452,6 +451,15 @@ variable "allowed_users" {
   default = ["user1", "user2", "user3"] # Add all allowed users
 }
 
+resource "kubernetes_namespace" "jupyterhub" {
+  provider = kubernetes.ai-workshop
+  metadata {
+    name = "jupyterhub"
+  }
+
+  depends_on = [aws_eks_cluster.ai_workshop_eks_cluster]
+}
+
 # Deploy the Helm chart
 resource "helm_release" "ai_workshop_jupyterhub" {
   provider         = helm.ai-workshop
@@ -464,10 +472,12 @@ resource "helm_release" "ai_workshop_jupyterhub" {
 
   values = [
     templatefile("${path.module}/files/jupyterhub_values.tftpl", {
-      admin_users             = var.admin_users
-      allowed_users           = local.allowed_users
-      dummy_auth_password     = var.ai_workshop_shared_password
-      aws_acm_certificate_arn = aws_acm_certificate_validation.jupyterhub_cert_validation.certificate_arn
+      admin_users                = var.admin_users
+      allowed_users              = local.allowed_users
+      dummy_auth_password        = var.ai_workshop_shared_password
+      aws_acm_certificate_arn    = aws_acm_certificate_validation.jupyterhub_cert_validation.certificate_arn
+      git_deploy_key_secret_name = kubernetes_secret.git_deploy_key.metadata[0].name,
+      git_repo_url               = var.ai_workshop_materials_git_repo_url,
     })
   ]
 
@@ -476,6 +486,21 @@ resource "helm_release" "ai_workshop_jupyterhub" {
     helm_release.ai_workshop_eks_cluster_aws_load_balancer_controller_helm_release,
     helm_release.ai_workshop_eks_cluster_nvidia_device_plugin_helm_release,
   aws_eks_addon.ai_workshop_eks_cluster_aws_ebs_csi_driver]
+}
+
+resource "kubernetes_secret" "git_deploy_key" {
+  provider = kubernetes.ai-workshop
+  metadata {
+    name      = "git-deploy-key"
+    namespace = "jupyterhub" # Replace with your namespace if different
+  }
+
+  data = {
+    "id_rsa" = "${file(var.ssh_private_key_file)}"
+  }
+
+  type       = "Opaque"
+  depends_on = [kubernetes_namespace.jupyterhub]
 }
 
 # Retrieve the Ingress resource to get the ALB hostname

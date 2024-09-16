@@ -27,3 +27,13 @@ variable "user_prefix" {
   type    = string
   default = "user"
 }
+
+variable "ai_workshop_materials_git_repo_url" {
+  description = "The git repo url for the repo that contains the workshop materials."
+  type        = string
+}
+
+variable "ssh_private_key_file" {
+  description = "The SSH private key file for GitHub deploy key."
+  type        = string
+}
