@@ -44,6 +44,8 @@ singleuser:
             gitpuller ${git_repo_url} main /home/jovyan/ai-workshop-materials
             ssh-agent -k
             rm -rf /home/jovyan/.ssh
+            cd /home/jovyan/ai-workshop-materials
+            pip install -r requirements.txt
   image:
     name: quay.io/jupyter/minimal-notebook
     tag: latest
