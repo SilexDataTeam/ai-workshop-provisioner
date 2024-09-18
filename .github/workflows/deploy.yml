@@ -1,5 +1,5 @@
 # .github/workflows/deploy.yml
-name: Terraform EKS Deployment
+name: Deployment (dlewis-lab)
 
 on:
   workflow_dispatch:
