@@ -38,3 +38,8 @@ variable "ssh_private_key" {
   type        = string
   sensitive   = true
 }
+
+variable "aws_administrator_role_arn" {
+  description = "The ARN of the AWS IAM role that has administrator access to the AWS account for EKS ClusterAdmin access."
+  type        = string
+}

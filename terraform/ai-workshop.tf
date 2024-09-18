@@ -54,8 +54,7 @@ resource "aws_eks_cluster" "ai_workshop_eks_cluster" {
   }
 
   access_config {
-    bootstrap_cluster_creator_admin_permissions = true
-    authentication_mode                         = "API_AND_CONFIG_MAP"
+    authentication_mode = "API_AND_CONFIG_MAP"
   }
 
   encryption_config {
@@ -83,6 +82,21 @@ resource "aws_eks_access_policy_association" "gh_terraform_deployment_eks_access
   cluster_name  = aws_eks_cluster.ai_workshop_eks_cluster.name
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
   principal_arn = data.aws_iam_role.ai_workshop_gh_actions_role.arn
+
+  access_scope {
+    type = "cluster"
+  }
+}
+
+resource "aws_eks_access_entry" "aws_administrator_access_eks_access_entry" {
+  cluster_name  = aws_eks_cluster.ai_workshop_eks_cluster.name
+  principal_arn = var.aws_administrator_role_arn
+}
+
+resource "aws_eks_access_policy_association" "aws_administrator_access_eks_access_policy_association" {
+  cluster_name  = aws_eks_cluster.ai_workshop_eks_cluster.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = var.aws_administrator_role_arn
 
   access_scope {
     type = "cluster"

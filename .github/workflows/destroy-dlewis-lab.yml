@@ -47,3 +47,4 @@ jobs:
             TF_VAR_ai_workshop_domain_name: ${{ vars.AI_WORKSHOP_DOMAIN_NAME }}
             TF_VAR_ai_workshop_route53_zone_name: ${{ vars.AI_WORKSHOP_ROUTE53_ZONE_NAME }}
             TF_VAR_ai_workshop_materials_git_repo_url: ${{ vars.AI_WORKSHOP_MATERIALS_GIT_REPO_URL }}
+            TF_VAR_aws_administrator_role_arn: ${{ vars.AWS_ADMINISTRATOR_ROLE_ARN }}
