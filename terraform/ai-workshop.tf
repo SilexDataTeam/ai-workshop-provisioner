@@ -266,6 +266,7 @@ resource "kubernetes_service_account" "ai_workshop_eks_cluster_aws_load_balancer
       "eks.amazonaws.com/role-arn" = module.load_balancer_controller_irsa_role.iam_role_arn
     }
   }
+  depends_on = [aws_eks_access_entry.gh_terraform_deployment_eks_access_entry, aws_eks_access_policy_association.gh_terraform_deployment_eks_access_policy_association]
 }
 
 provider "helm" {
@@ -296,7 +297,7 @@ resource "helm_release" "ai_workshop_eks_cluster_aws_load_balancer_controller_he
     value = kubernetes_service_account.ai_workshop_eks_cluster_aws_load_balancer_controller_service_account.metadata.0.name
   }
 
-  depends_on = [aws_eks_node_group.ai_workshop_eks_cluster_cpu_node_group_1, module.load_balancer_controller_irsa_role]
+  depends_on = [aws_eks_node_group.ai_workshop_eks_cluster_cpu_node_group_1, module.load_balancer_controller_irsa_role, aws_eks_access_entry.gh_terraform_deployment_eks_access_entry, aws_eks_access_policy_association.gh_terraform_deployment_eks_access_policy_association]
 }
 
 resource "aws_s3_bucket" "ai_workshop_logs_bucket" {
@@ -367,7 +368,7 @@ resource "helm_release" "ai_workshop_eks_cluster_autoscaler_helm_release" {
     value = module.cluster_autoscaler_irsa_role.iam_role_arn
   }
 
-  depends_on = [aws_eks_node_group.ai_workshop_eks_cluster_cpu_node_group_1]
+  depends_on = [aws_eks_node_group.ai_workshop_eks_cluster_cpu_node_group_1, aws_eks_access_entry.gh_terraform_deployment_eks_access_entry, aws_eks_access_policy_association.gh_terraform_deployment_eks_access_policy_association]
 }
 
 resource "aws_eks_addon" "ai_workshop_eks_cluster_amazon_cloudwatch_observability" {
@@ -387,7 +388,7 @@ resource "helm_release" "ai_workshop_eks_cluster_nvidia_device_plugin_helm_relea
     name  = "gfd.enabled"
     value = "true"
   }
-  depends_on = [aws_eks_node_group.ai_workshop_eks_cluster_cpu_node_group_1]
+  depends_on = [aws_eks_node_group.ai_workshop_eks_cluster_cpu_node_group_1, aws_eks_access_entry.gh_terraform_deployment_eks_access_entry, aws_eks_access_policy_association.gh_terraform_deployment_eks_access_policy_association]
 }
 
 module "ebs_csi_driver_irsa" {
@@ -476,7 +477,7 @@ resource "kubernetes_namespace" "jupyterhub" {
     name = "jupyterhub"
   }
 
-  depends_on = [aws_eks_cluster.ai_workshop_eks_cluster]
+  depends_on = [aws_eks_cluster.ai_workshop_eks_cluster, aws_eks_access_entry.gh_terraform_deployment_eks_access_entry, aws_eks_access_policy_association.gh_terraform_deployment_eks_access_policy_association]
 }
 
 # Deploy the Helm chart
@@ -504,7 +505,9 @@ resource "helm_release" "ai_workshop_jupyterhub" {
     helm_release.ai_workshop_eks_cluster_autoscaler_helm_release,
     helm_release.ai_workshop_eks_cluster_aws_load_balancer_controller_helm_release,
     helm_release.ai_workshop_eks_cluster_nvidia_device_plugin_helm_release,
-  aws_eks_addon.ai_workshop_eks_cluster_aws_ebs_csi_driver]
+    aws_eks_addon.ai_workshop_eks_cluster_aws_ebs_csi_driver,
+    aws_eks_access_entry.gh_terraform_deployment_eks_access_entry,
+  aws_eks_access_policy_association.gh_terraform_deployment_eks_access_policy_association]
 }
 
 resource "kubernetes_secret" "git_deploy_key" {
@@ -519,7 +522,7 @@ resource "kubernetes_secret" "git_deploy_key" {
   }
 
   type       = "Opaque"
-  depends_on = [kubernetes_namespace.jupyterhub]
+  depends_on = [kubernetes_namespace.jupyterhub, aws_eks_access_entry.gh_terraform_deployment_eks_access_entry, aws_eks_access_policy_association.gh_terraform_deployment_eks_access_policy_association]
 }
 
 # Retrieve the Ingress resource to get the ALB hostname
@@ -529,7 +532,7 @@ data "kubernetes_ingress_v1" "jupyterhub_ingress" {
     name      = "jupyterhub"
     namespace = "jupyterhub"
   }
-  depends_on = [helm_release.ai_workshop_jupyterhub]
+  depends_on = [helm_release.ai_workshop_jupyterhub, aws_eks_access_entry.gh_terraform_deployment_eks_access_entry, aws_eks_access_policy_association.gh_terraform_deployment_eks_access_policy_association]
 }
 
 # output "ingress_hostname" {
