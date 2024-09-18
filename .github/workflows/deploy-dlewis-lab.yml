@@ -1,0 +1,61 @@
+# .github/workflows/deploy.yml
+name: Deploy (dlewis-lab)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    name: Terraform
+    runs-on: ubuntu-latest
+    environment: dlewis-lab
+
+    permissions:
+      id-token: write  # Needed for OIDC authentication
+      contents: read
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-session-name: GitHubActionsTerraform
+          role-duration-seconds: 1200  # Adjust as needed
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: terraform
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+        working-directory: terraform
+        env:
+            TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+            TF_VAR_ai_workshop_eks_cluster_name: ${{ vars.AI_WORKSHOP_EKS_CLUSTER_NAME }}
+            TF_VAR_ai_workshop_eks_subnets: ${{ vars.AI_WORKSHOP_EKS_SUBNETS }}
+            TF_VAR_ai_workshop_shared_password: ${{ secrets.AI_WORKSHOP_SHARED_PASSWORD }}
+            TF_VAR_ai_workshop_domain_name: ${{ vars.AI_WORKSHOP_DOMAIN_NAME }}
+            TF_VAR_ai_workshop_route53_zone_name: ${{ vars.AI_WORKSHOP_ROUTE53_ZONE_NAME }}
+            TF_VAR_ai_workshop_materials_git_repo_url: ${{ vars.AI_WORKSHOP_MATERIALS_GIT_REPO_URL }}
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve tfplan
+        working-directory: terraform
+        env:
+            TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+            TF_VAR_ai_workshop_eks_cluster_name: ${{ vars.AI_WORKSHOP_EKS_CLUSTER_NAME }}
+            TF_VAR_ai_workshop_eks_subnets: ${{ vars.AI_WORKSHOP_EKS_SUBNETS }}
+            TF_VAR_ai_workshop_shared_password: ${{ secrets.AI_WORKSHOP_SHARED_PASSWORD }}
+            TF_VAR_ai_workshop_domain_name: ${{ vars.AI_WORKSHOP_DOMAIN_NAME }}
+            TF_VAR_ai_workshop_route53_zone_name: ${{ vars.AI_WORKSHOP_ROUTE53_ZONE_NAME }}
+            TF_VAR_ai_workshop_materials_git_repo_url: ${{ vars.AI_WORKSHOP_MATERIALS_GIT_REPO_URL }}

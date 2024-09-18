@@ -65,6 +65,25 @@ resource "aws_eks_cluster" "ai_workshop_eks_cluster" {
   aws_iam_role_policy_attachment.ai_workshop_eks_cluster_AWSEKSVPCResourceController, aws_cloudwatch_log_group.ai_workshop_eks_cluster_log_group]
 }
 
+data "aws_iam_role" "ai_workshop_gh_actions_role" {
+  name = "gh-terraform-deployment-role"
+}
+
+resource "aws_eks_access_entry" "gh_terraform_deployment_eks_access_entry" {
+  cluster_name  = aws_eks_cluster.ai_workshop_eks_cluster.name
+  principal_arn = data.aws_iam_role.ai_workshop_gh_actions_role.arn
+}
+
+resource "aws_eks_access_policy_association" "gh_terraform_deployment_eks_access_policy_association" {
+  cluster_name  = aws_eks_cluster.ai_workshop_eks_cluster.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = data.aws_iam_role.ai_workshop_gh_actions_role.arn
+
+  access_scope {
+    type = "cluster"
+  }
+}
+
 resource "aws_iam_role" "ai_workshop_eks_cluster_cpu_node_group_1_role" {
   name               = "${var.ai_workshop_eks_cluster_name}-cpu-node-group-1-role"
   assume_role_policy = <<EOF
