@@ -235,7 +235,7 @@ resource "aws_iam_openid_connect_provider" "ai_workshop_eks_cluster_oidc_provide
 
 module "load_balancer_controller_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.39.1"
+  version = "5.44.0"
 
   role_name_prefix   = "${var.ai_workshop_eks_cluster_name}-load-balancer-controller-"
   policy_name_prefix = "${var.ai_workshop_eks_cluster_name}-load-balancer-controller-"
@@ -342,7 +342,7 @@ resource "aws_s3_bucket_policy" "ai_workshop_logs_bucket_policy" {
 
 module "cluster_autoscaler_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.39.1"
+  version = "5.44.0"
 
   role_name_prefix               = "${var.ai_workshop_eks_cluster_name}-cluster-autoscaler-"
   policy_name_prefix             = "${var.ai_workshop_eks_cluster_name}-cluster-autoscaler-"
@@ -398,7 +398,7 @@ resource "helm_release" "ai_workshop_eks_cluster_nvidia_device_plugin_helm_relea
 
 module "ebs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.39.1"
+  version = "5.44.0"
 
   role_name_prefix   = "${var.ai_workshop_eks_cluster_name}-ebs-csi-"
   policy_name_prefix = "${var.ai_workshop_eks_cluster_name}-ebs-csi-"
