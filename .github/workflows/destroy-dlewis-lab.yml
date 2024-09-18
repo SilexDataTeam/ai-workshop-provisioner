@@ -1,4 +1,3 @@
-# .github/workflows/deploy.yml
 name: Destroy (dlewis-lab)
 
 on:
