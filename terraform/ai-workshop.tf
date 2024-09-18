@@ -54,7 +54,8 @@ resource "aws_eks_cluster" "ai_workshop_eks_cluster" {
   }
 
   access_config {
-    authentication_mode = "API_AND_CONFIG_MAP"
+    bootstrap_cluster_creator_admin_permissions = true
+    authentication_mode                         = "API_AND_CONFIG_MAP"
   }
 
   encryption_config {
