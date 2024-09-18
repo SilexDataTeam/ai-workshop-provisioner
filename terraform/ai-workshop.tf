@@ -53,6 +53,10 @@ resource "aws_eks_cluster" "ai_workshop_eks_cluster" {
     endpoint_private_access = true
   }
 
+  access_config {
+    authentication_mode = "API_AND_CONFIG_MAP"
+  }
+
   encryption_config {
     provider {
       key_arn = aws_kms_key.ai_workshop_eks_cluster.arn
