@@ -50,7 +50,7 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply -auto-approve tfplan 
         working-directory: terraform
         env:
             TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
