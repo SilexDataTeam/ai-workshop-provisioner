@@ -24,7 +24,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ vars.AWS_REGION }}
           role-session-name: GitHubActionsTerraform
-          role-duration-seconds: 1200  # Adjust as needed
+          role-duration-seconds: 3600  # Adjust as needed
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
