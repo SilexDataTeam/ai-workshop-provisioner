@@ -33,7 +33,8 @@ variable "ai_workshop_materials_git_repo_url" {
   type        = string
 }
 
-variable "ssh_private_key_file" {
-  description = "The SSH private key file for GitHub deploy key."
+variable "ssh_private_key" {
+  description = "The SSH private key for GitHub deploy key."
   type        = string
+  sensitive   = true
 }

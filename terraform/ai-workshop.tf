@@ -496,7 +496,7 @@ resource "kubernetes_secret" "git_deploy_key" {
   }
 
   data = {
-    "id_rsa" = "${file(var.ssh_private_key_file)}"
+    "id_rsa" = "${var.ssh_private_key}"
   }
 
   type       = "Opaque"
