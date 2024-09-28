@@ -64,7 +64,8 @@ resource "aws_eks_cluster" "ai_workshop_eks_cluster" {
     resources = ["secrets"]
   }
 
-  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+  #enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+  enabled_cluster_log_types = []
   depends_on = [aws_iam_role_policy_attachment.ai_workshop_eks_cluster_AWSEKSClusterPolicy,
   aws_iam_role_policy_attachment.ai_workshop_eks_cluster_AWSEKSVPCResourceController, aws_cloudwatch_log_group.ai_workshop_eks_cluster_log_group]
 }
@@ -390,12 +391,12 @@ resource "helm_release" "ai_workshop_eks_cluster_autoscaler_helm_release" {
   depends_on = [aws_eks_node_group.ai_workshop_eks_cluster_cpu_node_group_1, aws_eks_access_entry.gh_terraform_deployment_eks_access_entry, aws_eks_access_policy_association.gh_terraform_deployment_eks_access_policy_association, aws_eks_access_entry.aws_administrator_access_eks_access_entry, aws_eks_access_policy_association.aws_administrator_access_eks_access_policy_association]
 }
 
-resource "aws_eks_addon" "ai_workshop_eks_cluster_amazon_cloudwatch_observability" {
-  cluster_name = aws_eks_cluster.ai_workshop_eks_cluster.name
-  addon_name   = "amazon-cloudwatch-observability"
+# resource "aws_eks_addon" "ai_workshop_eks_cluster_amazon_cloudwatch_observability" {
+#   cluster_name = aws_eks_cluster.ai_workshop_eks_cluster.name
+#   addon_name   = "amazon-cloudwatch-observability"
 
-  depends_on = [helm_release.ai_workshop_eks_cluster_aws_load_balancer_controller_helm_release, helm_release.ai_workshop_eks_cluster_autoscaler_helm_release, aws_cloudwatch_log_group.ai_workshop_eks_cluster_log_group, aws_eks_node_group.ai_workshop_eks_cluster_cpu_node_group_1]
-}
+#   depends_on = [helm_release.ai_workshop_eks_cluster_aws_load_balancer_controller_helm_release, helm_release.ai_workshop_eks_cluster_autoscaler_helm_release, aws_cloudwatch_log_group.ai_workshop_eks_cluster_log_group, aws_eks_node_group.ai_workshop_eks_cluster_cpu_node_group_1]
+# }
 
 resource "helm_release" "ai_workshop_eks_cluster_nvidia_device_plugin_helm_release" {
   provider   = helm.ai-workshop
