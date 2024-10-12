@@ -33,17 +33,18 @@ singleuser:
     postStart:
       exec:
         command:
-          - sh
+          - /bin/sh
           - -c
           - |
             sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml
-            eval "$(ssh-agent -s)"
-            ssh-add /etc/git-secret/id_rsa
-            mkdir -p /home/jovyan/.ssh
-            ssh-keyscan -H github.com >> /home/jovyan/.ssh/known_hosts
-            gitpuller ${git_repo_url} main /home/jovyan/ai-workshop-materials
-            ssh-agent -k
-            rm -rf /home/jovyan/.ssh
+            sudo -u jovyan /bin/sh -c '
+              eval "$(ssh-agent -s)"
+              ssh-add /etc/git-secret/id_rsa
+              mkdir -p /home/jovyan/.ssh
+              ssh-keyscan -H github.com >> /home/jovyan/.ssh/known_hosts
+              gitpuller ${git_repo_url} main /home/jovyan/ai-workshop-materials
+              ssh-agent -k
+            '
   storage:
     capacity: 100Gi
     extraVolumes:

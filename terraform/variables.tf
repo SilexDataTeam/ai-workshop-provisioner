@@ -43,3 +43,14 @@ variable "aws_administrator_role_arn" {
   description = "The ARN of the AWS IAM role that has administrator access to the AWS account for EKS ClusterAdmin access."
   type        = string
 }
+
+variable "ai_workshop_docker_registry_username" {
+  description = "The docker registry username for the EKS cluster."
+  type        = string
+}
+
+variable "ai_workshop_docker_registry_password" {
+  description = "The docker registry password for the EKS cluster."
+  type        = string
+  sensitive   = true
+}

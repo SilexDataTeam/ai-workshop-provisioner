@@ -263,6 +263,8 @@ module "load_balancer_controller_irsa_role" {
       namespace_service_accounts = ["kube-system:aws-load-balancer-controller"]
     }
   }
+
+  depends_on = [aws_eks_access_entry.aws_administrator_access_eks_access_entry, aws_eks_access_policy_association.aws_administrator_access_eks_access_policy_association]
 }
 
 data "aws_eks_cluster_auth" "ai_workshop_eks_cluster_auth" {
@@ -371,6 +373,8 @@ module "cluster_autoscaler_irsa_role" {
       namespace_service_accounts = ["kube-system:cluster-autoscaler-aws-cluster-autoscaler"]
     }
   }
+
+  depends_on = [aws_eks_access_entry.aws_administrator_access_eks_access_entry, aws_eks_access_policy_association.aws_administrator_access_eks_access_policy_association]
 }
 
 resource "helm_release" "ai_workshop_eks_cluster_autoscaler_helm_release" {
@@ -426,6 +430,8 @@ module "ebs_csi_driver_irsa" {
       namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
     }
   }
+
+  depends_on = [aws_eks_access_entry.aws_administrator_access_eks_access_entry, aws_eks_access_policy_association.aws_administrator_access_eks_access_policy_association]
 }
 
 resource "aws_eks_addon" "ai_workshop_eks_cluster_aws_ebs_csi_driver" {
@@ -500,6 +506,34 @@ resource "kubernetes_namespace" "jupyterhub" {
   depends_on = [aws_eks_cluster.ai_workshop_eks_cluster, aws_eks_access_entry.gh_terraform_deployment_eks_access_entry, aws_eks_access_policy_association.gh_terraform_deployment_eks_access_policy_association, aws_eks_access_entry.aws_administrator_access_eks_access_entry, aws_eks_access_policy_association.aws_administrator_access_eks_access_policy_association]
 }
 
+locals {
+  docker_registry_secret_json = jsonencode({
+    auths = {
+      "ghcr.io" = {
+        username = var.ai_workshop_docker_registry_username
+        password = var.ai_workshop_docker_registry_password
+        auth     = base64encode("${var.ai_workshop_docker_registry_username}:${var.ai_workshop_docker_registry_password}")
+      }
+    }
+  })
+}
+
+resource "kubernetes_secret" "ghcr_secret" {
+  provider = kubernetes.ai-workshop
+  metadata {
+    name      = "ghcr-secret"
+    namespace = "jupyterhub"
+  }
+
+  data = {
+    ".dockerconfigjson" = local.docker_registry_secret_json
+  }
+
+  type = "kubernetes.io/dockerconfigjson"
+
+  depends_on = [kubernetes_namespace.jupyterhub, aws_eks_access_entry.gh_terraform_deployment_eks_access_entry, aws_eks_access_policy_association.gh_terraform_deployment_eks_access_policy_association, aws_eks_access_entry.aws_administrator_access_eks_access_entry, aws_eks_access_policy_association.aws_administrator_access_eks_access_policy_association]
+}
+
 # Deploy the Helm chart
 resource "helm_release" "ai_workshop_jupyterhub" {
   provider         = helm.ai-workshop
@@ -529,7 +563,8 @@ resource "helm_release" "ai_workshop_jupyterhub" {
     aws_eks_access_entry.gh_terraform_deployment_eks_access_entry,
     aws_eks_access_policy_association.gh_terraform_deployment_eks_access_policy_association,
     aws_eks_access_entry.aws_administrator_access_eks_access_entry,
-  aws_eks_access_policy_association.aws_administrator_access_eks_access_policy_association]
+    aws_eks_access_policy_association.aws_administrator_access_eks_access_policy_association,
+  kubernetes_secret.ghcr_secret]
 }
 
 resource "kubernetes_secret" "git_deploy_key" {
