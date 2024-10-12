@@ -272,6 +272,7 @@ data "aws_eks_cluster_auth" "ai_workshop_eks_cluster_auth" {
 
   depends_on = [
     aws_eks_cluster.ai_workshop_eks_cluster,
+    ai_workshop_eks_cluster_cpu_node_group_1,
     aws_eks_access_entry.gh_terraform_deployment_eks_access_entry,
     aws_eks_access_policy_association.gh_terraform_deployment_eks_access_policy_association,
     aws_eks_access_entry.aws_administrator_access_eks_access_entry,
