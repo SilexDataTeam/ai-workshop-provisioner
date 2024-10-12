@@ -288,7 +288,7 @@ resource "kubernetes_service_account" "ai_workshop_eks_cluster_aws_load_balancer
       "eks.amazonaws.com/role-arn" = module.load_balancer_controller_irsa_role.iam_role_arn
     }
   }
-  depends_on = [aws_eks_access_entry.gh_terraform_deployment_eks_access_entry, aws_eks_access_policy_association.gh_terraform_deployment_eks_access_policy_association, aws_eks_access_entry.aws_administrator_access_eks_access_entry, aws_eks_access_policy_association.aws_administrator_access_eks_access_policy_association]
+  depends_on = [aws_eks_access_entry.gh_terraform_deployment_eks_access_entry, aws_eks_access_policy_association.gh_terraform_deployment_eks_access_policy_association, aws_eks_access_entry.aws_administrator_access_eks_access_entry, aws_eks_access_policy_association.aws_administrator_access_eks_access_policy_association, module.load_balancer_controller_irsa_role]
 }
 
 provider "helm" {
