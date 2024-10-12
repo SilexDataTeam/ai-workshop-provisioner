@@ -46,6 +46,8 @@ jobs:
             TF_VAR_ai_workshop_route53_zone_name: ${{ vars.AI_WORKSHOP_ROUTE53_ZONE_NAME }}
             TF_VAR_ai_workshop_materials_git_repo_url: ${{ vars.AI_WORKSHOP_MATERIALS_GIT_REPO_URL }}
             TF_VAR_aws_administrator_role_arn: ${{ secrets.AWS_ADMINISTRATOR_ROLE_ARN }}
+            TF_VAR_ai_workshop_docker_registry_username: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_USERNAME }}
+            TF_VAR_ai_workshop_docker_registry_password: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_PASSWORD }}
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
@@ -60,3 +62,5 @@ jobs:
             TF_VAR_ai_workshop_route53_zone_name: ${{ vars.AI_WORKSHOP_ROUTE53_ZONE_NAME }}
             TF_VAR_ai_workshop_materials_git_repo_url: ${{ vars.AI_WORKSHOP_MATERIALS_GIT_REPO_URL }}
             TF_VAR_aws_administrator_role_arn: ${{ secrets.AWS_ADMINISTRATOR_ROLE_ARN }}
+            TF_VAR_ai_workshop_docker_registry_username: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_USERNAME }}
+            TF_VAR_ai_workshop_docker_registry_password: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_PASSWORD }}
