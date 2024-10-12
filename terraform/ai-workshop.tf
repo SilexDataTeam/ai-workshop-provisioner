@@ -267,24 +267,15 @@ module "load_balancer_controller_irsa_role" {
   depends_on = [aws_eks_access_entry.aws_administrator_access_eks_access_entry, aws_eks_access_policy_association.aws_administrator_access_eks_access_policy_association]
 }
 
-data "aws_eks_cluster_auth" "ai_workshop_eks_cluster_auth" {
-  name = aws_eks_cluster.ai_workshop_eks_cluster.name
-
-  depends_on = [
-    aws_eks_cluster.ai_workshop_eks_cluster,
-    aws_eks_node_group.ai_workshop_eks_cluster_cpu_node_group_1,
-    aws_eks_access_entry.gh_terraform_deployment_eks_access_entry,
-    aws_eks_access_policy_association.gh_terraform_deployment_eks_access_policy_association,
-    aws_eks_access_entry.aws_administrator_access_eks_access_entry,
-    aws_eks_access_policy_association.aws_administrator_access_eks_access_policy_association
-  ]
-}
-
 provider "kubernetes" {
   alias                  = "ai-workshop"
   host                   = aws_eks_cluster.ai_workshop_eks_cluster.endpoint
   cluster_ca_certificate = base64decode(aws_eks_cluster.ai_workshop_eks_cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.ai_workshop_eks_cluster_auth.token
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.ai_workshop_eks_cluster.name]
+    command     = "aws"
+  }
 }
 
 resource "kubernetes_service_account" "ai_workshop_eks_cluster_aws_load_balancer_controller_service_account" {
