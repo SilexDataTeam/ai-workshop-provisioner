@@ -34,8 +34,8 @@ jobs:
         run: terraform init
         working-directory: terraform
 
-      - name: Terraform Plan
-        run: terraform plan -out=tfplan
+      - name: Terraform Plan (ai_workshop_eks_cluster)
+        run: terraform plan -target=module.ai_workshop_eks_cluster -out=tfplan_ai_workshop_eks_cluster
         working-directory: terraform
         env:
             TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -49,9 +49,40 @@ jobs:
             TF_VAR_ai_workshop_docker_registry_username: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_USERNAME }}
             TF_VAR_ai_workshop_docker_registry_password: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_PASSWORD }}
 
-      - name: Terraform Apply
+      - name: Terraform Apply (ai_workshop_eks_cluster)
         if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve tfplan 
+        run: terraform apply -auto-approve tfplan_ai_workshop_eks_cluster
+        working-directory: terraform
+        env:
+            TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+            TF_VAR_ai_workshop_eks_cluster_name: ${{ vars.AI_WORKSHOP_EKS_CLUSTER_NAME }}
+            TF_VAR_ai_workshop_eks_subnets: ${{ vars.AI_WORKSHOP_EKS_SUBNETS }}
+            TF_VAR_ai_workshop_shared_password: ${{ secrets.AI_WORKSHOP_SHARED_PASSWORD }}
+            TF_VAR_ai_workshop_domain_name: ${{ vars.AI_WORKSHOP_DOMAIN_NAME }}
+            TF_VAR_ai_workshop_route53_zone_name: ${{ vars.AI_WORKSHOP_ROUTE53_ZONE_NAME }}
+            TF_VAR_ai_workshop_materials_git_repo_url: ${{ vars.AI_WORKSHOP_MATERIALS_GIT_REPO_URL }}
+            TF_VAR_aws_administrator_role_arn: ${{ secrets.AWS_ADMINISTRATOR_ROLE_ARN }}
+            TF_VAR_ai_workshop_docker_registry_username: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_USERNAME }}
+            TF_VAR_ai_workshop_docker_registry_password: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_PASSWORD }}
+
+      - name: Terraform Plan (ai_workshop_config)
+        run: terraform plan -target=module.ai_workshop_config -out=tfplan_ai_workshop_config
+        working-directory: terraform
+        env:
+            TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+            TF_VAR_ai_workshop_eks_cluster_name: ${{ vars.AI_WORKSHOP_EKS_CLUSTER_NAME }}
+            TF_VAR_ai_workshop_eks_subnets: ${{ vars.AI_WORKSHOP_EKS_SUBNETS }}
+            TF_VAR_ai_workshop_shared_password: ${{ secrets.AI_WORKSHOP_SHARED_PASSWORD }}
+            TF_VAR_ai_workshop_domain_name: ${{ vars.AI_WORKSHOP_DOMAIN_NAME }}
+            TF_VAR_ai_workshop_route53_zone_name: ${{ vars.AI_WORKSHOP_ROUTE53_ZONE_NAME }}
+            TF_VAR_ai_workshop_materials_git_repo_url: ${{ vars.AI_WORKSHOP_MATERIALS_GIT_REPO_URL }}
+            TF_VAR_aws_administrator_role_arn: ${{ secrets.AWS_ADMINISTRATOR_ROLE_ARN }}
+            TF_VAR_ai_workshop_docker_registry_username: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_USERNAME }}
+            TF_VAR_ai_workshop_docker_registry_password: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_PASSWORD }}
+
+      - name: Terraform Apply (ai_workshop_config)
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve tfplan_ai_workshop_config
         working-directory: terraform
         env:
             TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
