@@ -31,7 +31,7 @@ jobs:
           terraform_wrapper: false
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -upgrade
         working-directory: terraform
 
       - name: Terraform Destroy (ai_workshop_eks_cluster)
