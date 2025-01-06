@@ -244,7 +244,7 @@ resource "aws_iam_openid_connect_provider" "ai_workshop_eks_cluster_oidc_provide
 
 module "load_balancer_controller_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.51.0"
+  version = "5.52.1"
 
   role_name_prefix   = "${var.ai_workshop_eks_cluster_name}-load-balancer-controller-"
   policy_name_prefix = "${var.ai_workshop_eks_cluster_name}-load-balancer-controller-"
@@ -261,7 +261,7 @@ module "load_balancer_controller_irsa_role" {
 
 module "cluster_autoscaler_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.51.0"
+  version = "5.52.1"
 
   role_name_prefix               = "${var.ai_workshop_eks_cluster_name}-cluster-autoscaler-"
   policy_name_prefix             = "${var.ai_workshop_eks_cluster_name}-cluster-autoscaler-"
@@ -279,7 +279,7 @@ module "cluster_autoscaler_irsa_role" {
 
 module "ebs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.51.0"
+  version = "5.52.1"
 
   role_name_prefix   = "${var.ai_workshop_eks_cluster_name}-ebs-csi-"
   policy_name_prefix = "${var.ai_workshop_eks_cluster_name}-ebs-csi-"
