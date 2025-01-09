@@ -61,3 +61,8 @@ variable "ai_workshop_materials_git_repo_url" {
   description = "The git repo url for the repo that contains the workshop materials."
   type        = string
 }
+
+variable "openai_api_key" {
+  description = "The OpenAI API key."
+  type        = string
+}

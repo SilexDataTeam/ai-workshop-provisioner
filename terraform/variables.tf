@@ -54,3 +54,8 @@ variable "ai_workshop_docker_registry_password" {
   type        = string
   sensitive   = true
 }
+
+variable "openai_api_key" {
+  description = "The OpenAI API key."
+  type        = string
+}

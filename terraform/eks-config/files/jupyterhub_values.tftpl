@@ -21,6 +21,7 @@ singleuser:
   extraEnv:
     GRANT_SUDO: "yes"
     NOTEBOOK_ARGS: "--allow-root"
+    OPENAI_API_KEY: "${openai_api_key}
   uid: 0
   cmd: start-singleuser.sh
   profileList:
