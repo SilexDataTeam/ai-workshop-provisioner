@@ -153,6 +153,10 @@ resource "aws_eks_node_group" "ai_workshop_eks_cluster_cpu_node_group_1" {
   depends_on = [aws_eks_cluster.ai_workshop_eks_cluster, aws_iam_role_policy_attachment.ai_workshop_eks_cluster_cpu_node_group_1_AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.ai_workshop_eks_cluster_cpu_node_group_1_AmazonEC2ContainerRegistryReadOnly,
   aws_iam_role_policy_attachment.ai_workshop_eks_cluster_cpu_node_group_1_AmazonEKS_CNI_Policy]
+
+  lifecycle {
+    ignore_changes = [scaling_config[0].desired_size]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "ai_workshop_eks_cluster_cpu_node_group_1_CloudWatchAgentServerPolicy" {
@@ -220,6 +224,10 @@ resource "aws_eks_node_group" "ai_workshop_eks_cluster_gpu_node_group_1" {
   depends_on = [aws_eks_cluster.ai_workshop_eks_cluster, aws_iam_role_policy_attachment.ai_workshop_eks_cluster_gpu_node_group_1_AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.ai_workshop_eks_cluster_gpu_node_group_1_AmazonEC2ContainerRegistryReadOnly,
   aws_iam_role_policy_attachment.ai_workshop_eks_cluster_gpu_node_group_1_AmazonEKS_CNI_Policy]
+
+  lifecycle {
+    ignore_changes = [scaling_config[0].desired_size]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "ai_workshop_eks_cluster_gpu_node_group_1_CloudWatchAgentServerPolicy" {
