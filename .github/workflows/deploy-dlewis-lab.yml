@@ -49,6 +49,7 @@ jobs:
             TF_VAR_ai_workshop_docker_registry_username: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_USERNAME }}
             TF_VAR_ai_workshop_docker_registry_password: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_PASSWORD }}
             TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+            TF_VAR_number_of_users: ${{ vars.NUMBER_OF_USERS }}
 
       - name: Terraform Apply (ai_workshop_eks_cluster)
         if: github.ref == 'refs/heads/main'
@@ -66,6 +67,7 @@ jobs:
             TF_VAR_ai_workshop_docker_registry_username: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_USERNAME }}
             TF_VAR_ai_workshop_docker_registry_password: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_PASSWORD }}
             TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+            TF_VAR_number_of_users: ${{ vars.NUMBER_OF_USERS }}
 
       - name: Terraform Plan (ai_workshop_config)
         run: terraform plan -target=module.ai_workshop_config -out=tfplan_ai_workshop_config
@@ -82,6 +84,7 @@ jobs:
             TF_VAR_ai_workshop_docker_registry_username: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_USERNAME }}
             TF_VAR_ai_workshop_docker_registry_password: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_PASSWORD }}
             TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+            TF_VAR_number_of_users: ${{ vars.NUMBER_OF_USERS }}
 
       - name: Terraform Apply (ai_workshop_config)
         if: github.ref == 'refs/heads/main'
@@ -99,3 +102,4 @@ jobs:
             TF_VAR_ai_workshop_docker_registry_username: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_USERNAME }}
             TF_VAR_ai_workshop_docker_registry_password: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_PASSWORD }}
             TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+            TF_VAR_number_of_users: ${{ vars.NUMBER_OF_USERS }}
