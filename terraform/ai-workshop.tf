@@ -20,4 +20,5 @@ module "ai_workshop_config" {
   ai_workshop_shared_password           = var.ai_workshop_shared_password
   ai_workshop_materials_git_repo_url    = var.ai_workshop_materials_git_repo_url
   openai_api_key                        = var.openai_api_key
+  number_of_users                       = var.number_of_users
 }
