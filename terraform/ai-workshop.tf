@@ -3,6 +3,7 @@ module "ai_workshop_eks_cluster" {
   ai_workshop_eks_cluster_name = var.ai_workshop_eks_cluster_name
   ai_workshop_eks_subnets      = var.ai_workshop_eks_subnets
   aws_administrator_role_arn   = var.aws_administrator_role_arn
+  number_of_users              = var.number_of_users
 }
 
 module "ai_workshop_config" {
