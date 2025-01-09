@@ -1,4 +1,4 @@
-FROM quay.io/jupyter/minimal-notebook:latest
+FROM --platform=linux/amd64 quay.io/jupyter/minimal-notebook:latest
 LABEL org.opencontainers.image.source https://github.com/SilexDataTeam/ai-workshop-provisioner
 
 USER root
