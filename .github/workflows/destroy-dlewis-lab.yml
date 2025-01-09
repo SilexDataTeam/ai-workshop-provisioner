@@ -49,7 +49,7 @@ jobs:
             TF_VAR_aws_administrator_role_arn: ${{ secrets.AWS_ADMINISTRATOR_ROLE_ARN }}
             TF_VAR_ai_workshop_docker_registry_username: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_USERNAME }}
             TF_VAR_ai_workshop_docker_registry_password: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_PASSWORD }}
-            TF_var_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+            TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
             TF_VAR_number_of_users: ${{ vars.NUMBER_OF_USERS }}
 
       - name: Terraform Destroy (ai_workshop_eks_cluster)
