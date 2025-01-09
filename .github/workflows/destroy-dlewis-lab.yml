@@ -34,24 +34,6 @@ jobs:
         run: terraform init -upgrade
         working-directory: terraform
 
-      - name: Terraform Destroy (ai_workshop_eks_cluster)
-        if: github.ref == 'refs/heads/main'
-        run: terraform destroy -target=module.ai_workshop_eks_cluster -auto-approve
-        working-directory: terraform
-        env:
-            TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-            TF_VAR_ai_workshop_eks_cluster_name: ${{ vars.AI_WORKSHOP_EKS_CLUSTER_NAME }}
-            TF_VAR_ai_workshop_eks_subnets: ${{ vars.AI_WORKSHOP_EKS_SUBNETS }}
-            TF_VAR_ai_workshop_shared_password: ${{ secrets.AI_WORKSHOP_SHARED_PASSWORD }}
-            TF_VAR_ai_workshop_domain_name: ${{ vars.AI_WORKSHOP_DOMAIN_NAME }}
-            TF_VAR_ai_workshop_route53_zone_name: ${{ vars.AI_WORKSHOP_ROUTE53_ZONE_NAME }}
-            TF_VAR_ai_workshop_materials_git_repo_url: ${{ vars.AI_WORKSHOP_MATERIALS_GIT_REPO_URL }}
-            TF_VAR_aws_administrator_role_arn: ${{ secrets.AWS_ADMINISTRATOR_ROLE_ARN }}
-            TF_VAR_ai_workshop_docker_registry_username: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_USERNAME }}
-            TF_VAR_ai_workshop_docker_registry_password: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_PASSWORD }}
-            TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
-            TF_VAR_number_of_users: ${{ vars.NUMBER_OF_USERS }}
-
       - name: Terraform Destroy (ai_workshop_config)
         if: github.ref == 'refs/heads/main'
         run: terraform destroy -target=module.ai_workshop_config -auto-approve
@@ -68,4 +50,22 @@ jobs:
             TF_VAR_ai_workshop_docker_registry_username: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_USERNAME }}
             TF_VAR_ai_workshop_docker_registry_password: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_PASSWORD }}
             TF_var_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+            TF_VAR_number_of_users: ${{ vars.NUMBER_OF_USERS }}
+
+      - name: Terraform Destroy (ai_workshop_eks_cluster)
+        if: github.ref == 'refs/heads/main'
+        run: terraform destroy -target=module.ai_workshop_eks_cluster -auto-approve
+        working-directory: terraform
+        env:
+            TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+            TF_VAR_ai_workshop_eks_cluster_name: ${{ vars.AI_WORKSHOP_EKS_CLUSTER_NAME }}
+            TF_VAR_ai_workshop_eks_subnets: ${{ vars.AI_WORKSHOP_EKS_SUBNETS }}
+            TF_VAR_ai_workshop_shared_password: ${{ secrets.AI_WORKSHOP_SHARED_PASSWORD }}
+            TF_VAR_ai_workshop_domain_name: ${{ vars.AI_WORKSHOP_DOMAIN_NAME }}
+            TF_VAR_ai_workshop_route53_zone_name: ${{ vars.AI_WORKSHOP_ROUTE53_ZONE_NAME }}
+            TF_VAR_ai_workshop_materials_git_repo_url: ${{ vars.AI_WORKSHOP_MATERIALS_GIT_REPO_URL }}
+            TF_VAR_aws_administrator_role_arn: ${{ secrets.AWS_ADMINISTRATOR_ROLE_ARN }}
+            TF_VAR_ai_workshop_docker_registry_username: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_USERNAME }}
+            TF_VAR_ai_workshop_docker_registry_password: ${{ secrets.AI_WORKSHOP_DOCKER_REGISTRY_PASSWORD }}
+            TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
             TF_VAR_number_of_users: ${{ vars.NUMBER_OF_USERS }}
