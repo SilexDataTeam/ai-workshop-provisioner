@@ -211,7 +211,7 @@ resource "aws_eks_node_group" "ai_workshop_eks_cluster_gpu_node_group_1" {
 
   scaling_config {
     desired_size = 0
-    max_size     = var.number_of_users
+    max_size     = var.number_of_users + 5
     min_size     = 0
   }
 
