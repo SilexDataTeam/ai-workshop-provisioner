@@ -1,4 +1,4 @@
-name: docker-image-publish
+name: notebook-image-publish
 
 on:
   push:
