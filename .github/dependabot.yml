@@ -8,10 +8,34 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      # Check for updates to GitHub Actions every week
       interval: "weekly"
+    groups:
+      github-actions:
+        patterns: 
+          - "*"
   - package-ecosystem: "terraform"
     directory: "/terraform"
     schedule:
-      # Check for updates to Terraform every week
       interval: "weekly"
+    groups:
+      terraform-modules:
+        patterns:
+          - "*"
+  - package-ecosystem: "npm"
+    directory: "/workshop-user-registration"
+    schedule:
+      interval: "daily"
+    groups:
+      npm-packages:
+        patterns:
+          - "*"
+  - package-ecosystem: "docker"
+    directories:
+      - "/docker"
+      - "/workshop-user-registration"
+    schedule:
+      interval: "daily"
+    groups:
+      docker-images:
+        patterns:
+          - "*"
