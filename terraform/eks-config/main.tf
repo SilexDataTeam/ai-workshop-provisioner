@@ -270,3 +270,160 @@ resource "aws_route53_record" "jupyterhub" {
   records    = [data.kubernetes_ingress_v1.jupyterhub_ingress.status.0.load_balancer.0.ingress.0.hostname]
   depends_on = [data.kubernetes_ingress_v1.jupyterhub_ingress]
 }
+
+resource "kubernetes_deployment" "workshop_user_registration" {
+  provider = kubernetes.ai-workshop
+  metadata {
+    name      = "workshop-user-registration"
+    namespace = "jupyterhub"
+  }
+
+  spec {
+    replicas = 1
+
+    selector {
+      match_labels = {
+        app = "workshop-user-registration"
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          app = "workshop-user-registration"
+        }
+      }
+
+      spec {
+        container {
+          image = "ghcr.io/silexdatateam/ai-workshop-provisioner/workshop-user-registration:main"
+          name  = "workshop-user-registration"
+          port {
+            container_port = 3000
+          }
+          env {
+            name  = "MAX_USERS"
+            value = var.number_of_users
+          }
+          env {
+            name  = "SHARED_SECRET"
+            value = var.ai_workshop_shared_password
+          }
+          env {
+            name  = "CSV_FILE_PATH"
+            value = "/workspace/workshop-user-registration/registration.csv"
+          }
+        }
+        image_pull_secrets {
+          name = kubernetes_secret.ghcr_secret.metadata[0].name
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "workshop_user_registration" {
+  provider = kubernetes.ai-workshop
+  metadata {
+    name      = "workshop-user-registration"
+    namespace = "jupyterhub"
+  }
+
+  spec {
+    selector = {
+      app = "workshop-user-registration"
+    }
+
+    port {
+      port        = 3000
+      target_port = 3000
+    }
+
+    type = "NodePort"
+  }
+}
+
+resource "aws_acm_certificate" "workshop_user_registration_cert" {
+  domain_name       = "ai-workshop-registration.${var.ai_workshop_route53_zone_name}"
+  validation_method = "DNS"
+  tags = {
+    Name = "ai-workshop-registration.${var.ai_workshop_route53_zone_name}"
+  }
+}
+
+resource "aws_route53_record" "workshop_user_registration_cert_validation" {
+  for_each = {
+    for dvo in aws_acm_certificate.workshop_user_registration_cert.domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      type   = dvo.resource_record_type
+      record = dvo.resource_record_value
+    }
+  }
+
+  zone_id = data.aws_route53_zone.zone.zone_id
+  name    = each.value.name
+  type    = each.value.type
+  records = [each.value.record]
+  ttl     = 60
+}
+
+resource "aws_acm_certificate_validation" "workshop_user_registration_cert_validation" {
+  certificate_arn         = aws_acm_certificate.workshop_user_registration_cert.arn
+  validation_record_fqdns = [for record in aws_route53_record.workshop_user_registration_cert_validation : record.fqdn]
+}
+
+resource "kubernetes_ingress_v1" "workshop_user_registration" {
+  provider = kubernetes.ai-workshop
+  metadata {
+    name      = "workshop-user-registration"
+    namespace = "jupyterhub"
+    annotations = {
+      "kubernetes.io/ingress.class"                = "alb"
+      "alb.ingress.kubernetes.io/scheme"           = "internet-facing"
+      "alb.ingress.kubernetes.io/target-type"      = "ip"
+      "alb.ingress.kubernetes.io/healthcheck-path" = "/"
+      "alb.ingress.kubernetes.io/ssl-redirect"     = "443"
+      "alb.ingress.kubernetes.io/success-codes"    = "200"
+      "alb.ingress.kubernetes.io/listen-ports"     = "[{\"HTTP\": 80}, {\"HTTPS\":443}]"
+      "alb.ingress.kubernetes.io/certificate-arn"  = aws_acm_certificate_validation.workshop_user_registration_cert_validation.certificate_arn
+    }
+  }
+
+  spec {
+    rule {
+      host = "ai-workshop-registration.${var.ai_workshop_route53_zone_name}"
+      http {
+        path {
+          path = "/"
+          path_type = "Prefix"
+          backend {
+            service {
+              name = kubernetes_service.workshop_user_registration.metadata[0].name
+              port {
+                number = kubernetes_service.workshop_user_registration.spec[0].port[0].port
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+data "kubernetes_ingress_v1" "workshop_user_registration" {
+  provider = kubernetes.ai-workshop
+  metadata {
+    name      = "workshop-user-registration"
+    namespace = "jupyterhub"
+  }
+  depends_on = [kubernetes_ingress_v1.workshop_user_registration]
+}
+
+resource "aws_route53_record" "workshop_user_registration" {
+  zone_id    = data.aws_route53_zone.zone.zone_id
+  name       = "ai-workshop-registration.${var.ai_workshop_route53_zone_name}"
+  type       = "CNAME"
+  ttl        = 300
+  records    = [data.kubernetes_ingress_v1.workshop_user_registration.status.0.load_balancer.0.ingress.0.hostname]
+  depends_on = [data.kubernetes_ingress_v1.workshop_user_registration]
+}
