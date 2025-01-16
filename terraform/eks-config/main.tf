@@ -224,6 +224,7 @@ resource "helm_release" "ai_workshop_jupyterhub" {
       git_deploy_key_secret_name = kubernetes_secret.git_deploy_key.metadata[0].name,
       git_repo_url               = var.ai_workshop_materials_git_repo_url,
       openai_api_key             = var.openai_api_key,
+      tavily_api_key             = var.tavily_api_key
     })
   ]
 
@@ -394,7 +395,7 @@ resource "kubernetes_ingress_v1" "workshop_user_registration" {
       host = "ai-workshop-registration.${var.ai_workshop_route53_zone_name}"
       http {
         path {
-          path = "/"
+          path      = "/"
           path_type = "Prefix"
           backend {
             service {

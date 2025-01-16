@@ -66,3 +66,8 @@ variable "openai_api_key" {
   description = "The OpenAI API key."
   type        = string
 }
+
+variable "tavily_api_key" {
+  description = "The Tavily API key."
+  type        = string
+}
