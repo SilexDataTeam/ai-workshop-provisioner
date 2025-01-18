@@ -13,6 +13,15 @@ updates:
       github-actions:
         patterns: 
           - "*"
+  - package-ecosystem: "pip"
+    directories:
+      - "/docker"
+    schedule:
+      interval: "daily"
+    groups:
+      python-packages:
+        patterns:
+          - "*"
   - package-ecosystem: "terraform"
     directory: "/terraform"
     schedule:
