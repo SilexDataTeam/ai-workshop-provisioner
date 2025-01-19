@@ -51,6 +51,7 @@ jobs:
             TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
             TF_VAR_number_of_users: ${{ vars.NUMBER_OF_USERS }}
             TF_VAR_tavily_api_key: ${{ secrets.TAVILY_API_KEY }}
+            TF_VAR_hf_token: ${{ secrets.HF_TOKEN }}
 
       - name: Terraform Apply (ai_workshop_eks_cluster)
         if: github.ref == 'refs/heads/main'
@@ -70,6 +71,7 @@ jobs:
             TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
             TF_VAR_number_of_users: ${{ vars.NUMBER_OF_USERS }}
             TF_VAR_tavily_api_key: ${{ secrets.TAVILY_API_KEY }}
+            TF_VAR_hf_token: ${{ secrets.HF_TOKEN }}
 
       - name: Terraform Plan (ai_workshop_config)
         run: terraform plan -target=module.ai_workshop_config -out=tfplan_ai_workshop_config
@@ -88,6 +90,7 @@ jobs:
             TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
             TF_VAR_number_of_users: ${{ vars.NUMBER_OF_USERS }}
             TF_VAR_tavily_api_key: ${{ secrets.TAVILY_API_KEY }}
+            TF_VAR_hf_token: ${{ secrets.HF_TOKEN }}
 
       - name: Terraform Apply (ai_workshop_config)
         if: github.ref == 'refs/heads/main'
@@ -107,3 +110,4 @@ jobs:
             TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
             TF_VAR_number_of_users: ${{ vars.NUMBER_OF_USERS }}
             TF_VAR_tavily_api_key: ${{ secrets.TAVILY_API_KEY }}
+            TF_VAR_hf_token: ${{ secrets.HF_TOKEN }}

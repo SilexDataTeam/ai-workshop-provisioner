@@ -52,6 +52,7 @@ jobs:
             TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
             TF_VAR_number_of_users: ${{ vars.NUMBER_OF_USERS }}
             TF_VAR_tavily_api_key: ${{ secrets.TAVILY_API_KEY }}
+            TF_VAR_hf_token: ${{ secrets.HF_TOKEN }}
 
       - name: Terraform Destroy (ai_workshop_eks_cluster)
         if: github.ref == 'refs/heads/main'
@@ -71,3 +72,4 @@ jobs:
             TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
             TF_VAR_number_of_users: ${{ vars.NUMBER_OF_USERS }}
             TF_VAR_tavily_api_key: ${{ secrets.TAVILY_API_KEY }}
+            TF_VAR_hf_token: ${{ secrets.HF_TOKEN }}
