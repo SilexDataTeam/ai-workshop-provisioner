@@ -409,6 +409,8 @@ resource "kubernetes_ingress_v1" "workshop_user_registration" {
       }
     }
   }
+  
+  wait_for_load_balancer = true
 }
 
 data "kubernetes_ingress_v1" "workshop_user_registration" {
@@ -417,8 +419,10 @@ data "kubernetes_ingress_v1" "workshop_user_registration" {
     name      = "workshop-user-registration"
     namespace = "jupyterhub"
   }
-  depends_on = [kubernetes_ingress_v1.workshop_user_registration]
+
+  depends_on = [kubernetes_ingress_v1.workshop_user_registration, helm_release.ai_workshop_eks_cluster_aws_load_balancer_controller_helm_release]
 }
+
 
 resource "aws_route53_record" "workshop_user_registration" {
   zone_id    = data.aws_route53_zone.zone.zone_id
