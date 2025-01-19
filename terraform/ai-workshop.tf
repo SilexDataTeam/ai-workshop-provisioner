@@ -23,4 +23,5 @@ module "ai_workshop_config" {
   openai_api_key                        = var.openai_api_key
   number_of_users                       = var.number_of_users
   tavily_api_key                        = var.tavily_api_key
+  hf_token                              = var.hf_token
 }

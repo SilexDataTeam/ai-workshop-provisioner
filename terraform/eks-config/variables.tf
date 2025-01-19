@@ -71,3 +71,8 @@ variable "tavily_api_key" {
   description = "The Tavily API key."
   type        = string
 }
+
+variable "hf_token" {
+  description = "HuggingFace API key."
+  type        = string
+}
