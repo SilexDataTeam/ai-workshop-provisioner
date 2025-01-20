@@ -3,7 +3,7 @@ LABEL org.opencontainers.image.source https://github.com/SilexDataTeam/ai-worksh
 
 USER root
 
-RUN apt-get update; apt-get install -y podman libmagic-dev libg11
+RUN apt-get update; apt-get install -y podman libmagic-dev libgl1
 
 ADD requirements.txt /tmp/requirements.txt
 ADD containers.conf /etc/containers/containers.conf
