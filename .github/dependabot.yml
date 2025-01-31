@@ -34,6 +34,9 @@ updates:
     directory: "/workshop-user-registration"
     schedule:
       interval: "weekly"
+    ignore:
+              - dependency-name: "tailwindcss"
+                update-types: ["version-update:semver-major"]
     groups:
       npm-packages:
         patterns:
