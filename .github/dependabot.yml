@@ -17,7 +17,7 @@ updates:
     directories:
       - "/docker"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     groups:
       python-packages:
         patterns:
@@ -33,7 +33,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/workshop-user-registration"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     groups:
       npm-packages:
         patterns:
@@ -43,7 +43,7 @@ updates:
       - "/docker"
       - "/workshop-user-registration"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     groups:
       docker-images:
         patterns:
