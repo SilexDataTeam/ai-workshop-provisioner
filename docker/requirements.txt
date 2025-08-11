@@ -1,4 +1,4 @@
-openai==1.99.5
+openai==1.99.6
 langchain==0.3.27
 langchain-community==0.3.27
 langchain-core==0.3.74
