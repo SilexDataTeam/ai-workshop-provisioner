@@ -6,7 +6,7 @@ langchain-openai==0.3.29
 langchain-text-splitters==1.0.0a1
 langchain-ollama==0.3.6
 vllm==0.11.0
-pypdf==6.0.0
+pypdf==6.4.0
 wikipedia==1.4.0
 markitdown==0.0.1a4
 langchain-experimental==0.3.4
