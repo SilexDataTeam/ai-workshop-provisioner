@@ -13,7 +13,7 @@ langchain-experimental==0.4.1
 ragas==0.4.3
 ipywidgets==8.1.8
 rapidfuzz==3.14.3
-transformers==4.57.6
+transformers==5.0.0rc3
 matplotlib==3.10.8
 langchain-unstructured[local]==1.0.1
 langgraph==1.0.6
