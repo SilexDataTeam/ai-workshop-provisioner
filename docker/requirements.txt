@@ -3,7 +3,7 @@ langchain==1.2.6
 langchain-community==0.4.1
 langchain-core==1.2.7
 langchain-openai==1.1.7
-langchain-text-splitters==1.1.0
+langchain-text-splitters==1.1.2
 langchain-ollama==1.0.1
 vllm==0.11.0
 pypdf==6.6.0
